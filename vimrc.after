@@ -1,165 +1,293 @@
-" Start without the toolbar
-set guioptions-=T
-set guioptions-=m
+set shell=/bin/bash
 
-" Start without scrollbar - buggy needs - after  +
-set guioptions+=LlRrb
-set guioptions-=LlRrb
+set nocompatible
+set number
+set ruler
+syntax on
+set encoding=utf-8
 
-" ConqueTerm wrapper
-function StartTerm()
-  execute 'ConqueTerm ' . $SHELL . ' --login'
-  setlocal listchars=tab:\ \ 
+let mapleader=","
+
+" buffergator configuration
+let g:buffergator_autoexpand_on_split = 0
+let g:buffergator_sort_regime = "mru"
+
+
+" cursor line changes color on insert mode
+hi CursorLine ctermbg=green cterm=none
+au InsertEnter * set cursorline
+au InsertLeave * set nocursorline
+
+" ctrlp configuration
+let g:ctrlp_map = '<c-t>'
+
+" split join shortcuts (overwrite s)
+nmap sj :SplitjoinSplit<cr>
+nmap sk :SplitjoinJoin<cr>
+
+" Whitespace stuff
+set nowrap
+set tabstop=2
+set shiftwidth=2
+set softtabstop=2
+set expandtab
+set list listchars=tab:\ \ ,trail:·
+
+" Searching
+set hlsearch
+set incsearch
+set ignorecase
+set smartcase
+
+" Toggle wrap
+map <F2> :set nowrap! <CR>
+
+" Press Space to turn off highlighting and clear any message already displayed.
+:nnoremap <silent> <Space> :nohlsearch<Bar>:echo<CR>
+
+" Tab completion
+set wildmode=list:longest,list:full
+set wildignore+=*.o,*.obj,.git,*.rbc,*.class,.svn,vendor/gems/*
+set wildignore+=*.png,*.jpg,*.gif,*.bmp
+
+" Status bar
+set laststatus=2
+
+" Without setting this, ZoomWin restores windows in a way that causes
+" equalalways behavior to be triggered the next time CommandT is used.
+" This is likely a bludgeon to solve some other issue, but it works
+set noequalalways
+
+" NERDTree configuration
+let NERDTreeIgnore=['\.rbc$', '\~$']
+let NERDTreeQuitOnOpen=1
+" map <Leader>n :NERDTreeToggle<CR>
+
+" ZoomWin configuration
+map <Leader><Space> :ZoomWin<CR>
+
+
+" Remember last location in file
+if has("autocmd")
+au BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$")
+  \| exe "normal g'\"" | endif
+endif
+
+function! s:setupWrapping()
+  set wrap
+  set wm=2
+  set textwidth=72
 endfunction
 
-" Project Tree
-autocmd VimEnter * call s:CdIfDirectory(expand("<amatch>"))
-autocmd FocusGained * call s:UpdateNERDTree()
-autocmd WinEnter * call s:CloseIfOnlyNerdTreeLeft()
 
-" Close all open buffers on entering a window if the only
-" buffer that's left is the NERDTree buffer
-function s:CloseIfOnlyNerdTreeLeft()
-  if exists("t:NERDTreeBufName")
-    if bufwinnr(t:NERDTreeBufName) != -1
-      if winnr("$") == 1
-        q
-      endif
-    endif
-  endif
-endfunction
+" make uses real tabs
+au FileType make                                     set noexpandtab
 
-" If the parameter is a directory, cd into it
-function s:CdIfDirectory(directory)
-  let explicitDirectory = isdirectory(a:directory)
-  let directory = explicitDirectory || empty(a:directory)
+" Thorfile, Rakefile, Vagrantfile and Gemfile are Ruby
+au BufRead,BufNewFile {Gemfile,Rakefile,Vagrantfile,Thorfile,config.ru}    set ft=ruby
 
-  if explicitDirectory
-    exe "cd " . fnameescape(a:directory)
-  endif
+" Less is css
+au BufNewFile,BufRead *.less set filetype=css
 
-  " Allows reading from stdin
-  " ex: git diff | mvim -R -
-  if strlen(a:directory) == 0 
-    return
-  endif
+au BufNewFile,BufRead *.html set filetype=html
+au BufRead,BufNewFile *.txt call s:setupWrapping()
 
-  if directory
-    NERDTree
-    wincmd p
-    bd
-  endif
+" compile less on less buffer save
+au BufWritePost,FileWritePost *.less :silent !~/local/node_modules/less/bin/lessc <afile> > %:r.css
 
-  if explicitDirectory
-    wincmd p
-  endif
-endfunction
+" disable autolessc on less files
+map <Leader><F9> <Esc>:au! BufWritePost,FileWritePost *.less <CR>:au BufNewFile,BufRead *.less set filetype=css
 
-" NERDTree utility function
-function s:UpdateNERDTree(...)
-  let stay = 0
+" allow backspacing over everything in insert mode
+set backspace=indent,eol,start
 
-  if(exists("a:1"))
-    let stay = a:1
-  end
+" load the plugin and indent settings for the detected filetype
+filetype plugin indent on
 
-  if exists("t:NERDTreeBufName")
-    let nr = bufwinnr(t:NERDTreeBufName)
-    if nr != -1
-      exe nr . "wincmd w"
-      exe substitute(mapcheck("R"), "<CR>", "", "")
-      if !stay
-        wincmd p
-      end
-    endif
-  endif
+" Opens an edit command with the path of the currently edited file filled in
+" Normal mode: <Leader>e
+map <Leader>e :e <C-R>=expand("%:p:h") . "/" <CR>
 
-  if exists(":CommandTFlush") == 2
-    CommandTFlush
-  endif
-endfunction
+" Opens a tab edit command with the path of the currently edited file filled in
+" Normal mode: <Leader>t
+map <Leader>te :tabe <C-R>=expand("%:p:h") . "/" <CR>
 
-" Utility functions to create file commands
-function s:CommandCabbr(abbreviation, expansion)
-  execute 'cabbrev ' . a:abbreviation . ' <c-r>=getcmdpos() == 1 && getcmdtype() == ":" ? "' . a:expansion . '" : "' . a:abbreviation . '"<CR>'
-endfunction
+" Inserts the path of the currently edited file into a command
+" Command mode: Ctrl+P
+cmap <C-P> <C-R>=expand("%:p:h") . "/" <CR>
 
-function s:FileCommand(name, ...)
-  if exists("a:1")
-    let funcname = a:1
-  else
-    let funcname = a:name
-  endif
+" Unimpaired configuration
+" Bubble single lines
+nmap <C-Up> [e
+nmap <C-Down> ]e
+" Bubble multiple lines
+vmap <C-Up> [egv
+vmap <C-Down> ]egv
 
-  execute 'command -nargs=1 -complete=file ' . a:name . ' :call ' . funcname . '(<f-args>)'
-endfunction
+" indent visual block
+vmap <C-Right> >gv
+vmap <C-Left> <gv
 
-function s:DefineCommand(name, destination)
-  call s:FileCommand(a:destination)
-  call s:CommandCabbr(a:name, a:destination)
-endfunction
+noremap 0 ^
+noremap ^ 0
+map <A-0> ^
 
-" Public NERDTree-aware versions of builtin functions
-function ChangeDirectory(dir, ...)
-  execute "cd " . fnameescape(a:dir)
-  let stay = exists("a:1") ? a:1 : 1
+" Enable syntastic syntax checking
+let g:syntastic_enable_signs=1
+let g:syntastic_quiet_warnings=1
 
-  NERDTree
+" gist-vim defaults
+if has("mac")
+  let g:gist_clip_command = 'pbcopy'
+elseif has("unix")
+  let g:gist_clip_command = 'xclip -selection clipboard'
+endif
+let g:gist_detect_filetype = 1
+let g:gist_open_browser_after_post = 1
 
-  if !stay
-    wincmd p
-  endif
-endfunction
 
-function Touch(file)
-  execute "!touch " . shellescape(a:file, 1)
-  call s:UpdateNERDTree()
-endfunction
+" Use modeline overrides
+set modeline
+set modelines=10
 
-function Remove(file)
-  let current_path = expand("%")
-  let removed_path = fnamemodify(a:file, ":p")
+" Default color scheme
+ color railscasts 
 
-  if (current_path == removed_path) && (getbufvar("%", "&modified"))
-    echo "You are trying to remove the file you are editing. Please close the buffer first."
-  else
-    execute "!rm " . shellescape(a:file, 1)
-  endif
+" Directories for swp files
+" set backupdir=~/.vim/backup
+" set directory=~/.vim/backup
+set nobackup
+set nowritebackup
+set noswapfile
 
-  call s:UpdateNERDTree()
-endfunction
+" Turn off jslint errors by default
+let g:JSLintHighlightErrorLine = 0
 
-function Mkdir(file)
-  execute "!mkdir " . shellescape(a:file, 1)
-  call s:UpdateNERDTree()
-endfunction
+" MacVIM shift+arrow-keys behavior (required in .vimrc)
+" let macvim_hig_shift_movement = 1
 
-function Edit(file)
-  if exists("b:NERDTreeRoot")
-    wincmd p
-  endif
+" % to bounce from do to end etc.
+runtime! macros/matchit.vim
 
-  execute "e " . fnameescape(a:file)
+map <C-s> :w<CR>
+imap <C-s> <Esc>:w<CR>
+vmap <C-s> <Esc>:w<CR>
 
-ruby << RUBY
-  destination = File.expand_path(VIM.evaluate(%{system("dirname " . shellescape(a:file, 1))}))
-  pwd         = File.expand_path(Dir.pwd)
-  home        = pwd == File.expand_path("~")
+map <F4> :q<CR>
+imap <F4> :q<CR>
+map <C-F4> :bd<CR>
+imap <C-F4> <Esc>:bq<CR>
+map <F1> :NERDTreeToggle<CR>
+imap <F1> <Esc>:NerdTreeToggle<CR>
 
-  if home || Regexp.new("^" + Regexp.escape(pwd)) !~ destination
-    VIM.command(%{call ChangeDirectory(fnamemodify(a:file, ":h"), 0)})
-  end
-RUBY
-endfunction
 
-" Define the NERDTree-aware aliases
-call s:DefineCommand("cd", "ChangeDirectory")
-call s:DefineCommand("touch", "Touch")
-call s:DefineCommand("rm", "Remove")
-call s:DefineCommand("e", "Edit")
-call s:DefineCommand("mkdir", "Mkdir")
+" Command-Shift-F for Ack
+map <C-F> :Ack<space>
+
+
+" Command-Option-ArrowKey to switch viewports
+map <A-k> <C-w>k
+imap <A-k> <Esc> <C-w>k
+map <A-j> <C-w>j
+imap <A-j> <Esc> <C-w>j
+map <A-l> <C-w>l
+imap <A-l> <Esc> <C-w>l
+map <A-h> <C-w>h
+imap <A-h> <C-w>h
+
+
+" split window
+nmap <leader>sw<left>  :topleft  vnew<CR>
+nmap <leader>sw<right> :botright vnew<CR>
+nmap <leader>sw<up>    :topleft  new<CR>
+nmap <leader>sw<down>  :botright new<CR>
+
+" split buffer
+nmap <leader>s<left>   :leftabove  vnew<CR>
+nmap <leader>s<right>  :rightbelow vnew<CR>
+nmap <leader>s<up>     :leftabove  new<CR>
+nmap <leader>s<down>   :rightbelow new<CR>
+
+nnoremap <leader>w <C-w>v<C-w>l
+
+" wordwrapping better experience
+nnoremap j gj
+nnoremap k gk
+
+"always resubstitute in all lines! (I)
+nnoremap & g&
+
+
+" Adjust viewports to the same size
+map <Leader>= <C-w>=
+imap <Leader>= <Esc> <C-w>=
+
+" Quickly edit/reload the vimrc file
+nmap <silent> <leader>ev :e $MYVIMRC<CR>
+nmap <silent> <leader>sv :so $MYVIMRC<CR>
+
+inoremap jj <Esc>
+
+" https://github.com/Shougo/neocomplcache
+let g:neocomplcache_enable_at_startup = 0
+
+" improvements in paste clipboard
+imap <C-v> <Esc>"+pa
+
+" improvements copy to clipboard
+vmap <C-c> "+y
+
+" repeat the last command and put the cursor at start of change. 
+" not nice with plugins repeat. it set up in the beginning of the file
+" map . .`[
+
+" Map Y to act like D and C, i.e. to yank until EOL, rather than act as yy,
+" which is the default
+map Y y$
+
+"css speed
+map <F8> <C-x>
+map <F9> <C-a>
+
+"split next comma to new line
+" map <F3> f,lr<CR>
+
+
+" custom word toggling
+let g:_toggle_words_dict = {'*': [
+    \ ['==', '!='], 
+    \ ['>', '<'], 
+    \ ['(', ')'], 
+    \ ['[', ']'], 
+    \ ['{', '}'], 
+    \ ['+', '-'], 
+    \ ['allow', 'deny'], 
+    \ ['before', 'after'], 
+    \ ['block', 'inline', 'none'],
+    \ ['define', 'undef'], 
+    \ ['good', 'bad'], 
+    \ ['if', 'unless'], 
+    \ ['in', 'out'], 
+    \ ['left', 'right'],
+    \ ['min', 'max'], 
+    \ ['on', 'off'], 
+    \ ['start', 'stop'], 
+    \ ['success', 'failure'], 
+    \ ['true', 'false'],
+    \ ['up', 'down'], 
+    \ ['left', 'right'],
+    \ ['yes', 'no'], 
+    \ ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'], 
+    \ ['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december'], 
+    \ ['1', '0'],
+    \ [],
+    \ ],  }
+" let g:toggle_words_dict = {'*': [
+"     \ ['if', 'unless'], 
+"     \ ],  }
+map <F3> <Esc>:ToggleWord<CR>
 
 " Include user's local vim config
-if filereadable(expand("~/.gvimrc.local"))
-  source ~/.gvimrc.local
+if filereadable(expand("~/.vimrc.local"))
+  source ~/.vimrc.local
 endif
