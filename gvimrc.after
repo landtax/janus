@@ -159,6 +159,11 @@ call s:DefineCommand("rm", "Remove")
 call s:DefineCommand("e", "Edit")
 call s:DefineCommand("mkdir", "Mkdir")
 
+" Include vimrc 
+if filereadable(expand("~/.vimrc.after"))
+  source ~/.vimrc.after
+endif
+
 " Include user's local vim config
 if filereadable(expand("~/.gvimrc.local"))
   source ~/.gvimrc.local
