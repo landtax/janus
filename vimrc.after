@@ -16,8 +16,6 @@ hi CursorLine ctermbg=green cterm=none
 au InsertEnter * set cursorline
 au InsertLeave * set nocursorline
 
-" ctrlp configuration
-let g:ctrlp_map = '<c-t>'
 
 " split join shortcuts (overwrite s)
 nmap sj :SplitjoinSplit<cr>
@@ -102,17 +100,6 @@ set backspace=indent,eol,start
 " load the plugin and indent settings for the detected filetype
 filetype plugin indent on
 
-" Opens an edit command with the path of the currently edited file filled in
-" Normal mode: <Leader>e
-map <Leader>e :e <C-R>=expand("%:p:h") . "/" <CR>
-
-" Opens a tab edit command with the path of the currently edited file filled in
-" Normal mode: <Leader>t
-map <Leader>te :tabe <C-R>=expand("%:p:h") . "/" <CR>
-
-" Inserts the path of the currently edited file into a command
-" Command mode: Ctrl+P
-cmap <C-P> <C-R>=expand("%:p:h") . "/" <CR>
 
 " Unimpaired configuration
 " Bubble single lines
@@ -219,10 +206,6 @@ nnoremap & g&
 " Adjust viewports to the same size
 map <Leader>= <C-w>=
 imap <Leader>= <Esc> <C-w>=
-
-" Quickly edit/reload the vimrc file
-nmap <silent> <leader>ev :e $MYVIMRC<CR>
-nmap <silent> <leader>sv :so $MYVIMRC<CR>
 
 inoremap jj <Esc>
 
