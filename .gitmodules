@@ -1,9 +1,0 @@
-[submodule "nerdtree"]
-	path = nerdtree
-	url = https://github.com/scrooloose/nerdtree.git
-[submodule "nerdcommenter"]
-	path = nerdcommenter
-	url = https://github.com/scrooloose/nerdcommenter.git
-[submodule "vim-surround"]
-	path = vim-surround
-	url = https://github.com/tpope/vim-surround.git
