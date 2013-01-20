@@ -1,0 +1,3 @@
+[submodule "zoomwin25"]
+	path = zoomwin25
+	url = https://github.com/regedarek/ZoomWin.git

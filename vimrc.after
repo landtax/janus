@@ -61,6 +61,21 @@ let NERDTreeQuitOnOpen=1
 
 " ZoomWin configuration
 map <Leader><Space> :ZoomWin<CR>
+let g:zoomwin_localoptlist = [
+				\ "ai"  , "ar"  , "bh"  , "bin", "bl"  ,
+				\ "bomb", "bt"  , "cfu" , "ci" , "cin" ,
+				\ "cink", "cino", "cinw", "cms", "com" ,
+				\ "cpt" , "efm" , "eol" , "ep" , "et"  ,
+				\ "fenc", "fex" , "ff"  , "flp", "fo"  ,
+				\ "ft"  , "gp"  , "imi" , "ims", "inde",
+				\ "inex", "indk", "inf" , "isk", "key" ,
+				\ "kmp" , "lisp", "mps" , "ml" , "ma"  ,
+				\ "mod" , "nf"  , "ofu" , "oft", "pi"  ,
+				\ "qe"  , "ro"  , "sw"  , "sn" , "si"  ,
+				\ "sts" , "spc" , "spf" , "spl", "sua" ,
+				\ "swf" , "smc" , "syn" , "ts" , "tx"  ,
+				\ "tw"  , "wm"]
+" removed udf element. not present in v7.2 (v 7.3+)
 
 
 " Remember last location in file
