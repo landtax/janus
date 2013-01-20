@@ -1,3 +1,6 @@
 [submodule "zoomwin25"]
 	path = zoomwin25
 	url = https://github.com/regedarek/ZoomWin.git
+[submodule "vim-quotes"]
+	path = vim-quotes
+	url = https://github.com/kurkale6ka/vim-quotes.git
