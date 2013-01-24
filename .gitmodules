@@ -19,9 +19,6 @@
 [submodule "toggle_words.vim"]
 	path = toggle_words.vim
 	url = https://github.com/vim-scripts/toggle_words.vim.git
-[submodule "monday"]
-	path = monday
-	url = https://github.com/vim-scripts/monday.git
 [submodule "swap-parameters"]
 	path = swap-parameters
 	url = https://github.com/vim-scripts/swap-parameters.git
