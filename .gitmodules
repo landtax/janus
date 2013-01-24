@@ -4,3 +4,24 @@
 [submodule "vim-quotes"]
 	path = vim-quotes
 	url = https://github.com/kurkale6ka/vim-quotes.git
+[submodule "splitjoin.vim"]
+	path = splitjoin.vim
+	url = https://github.com/AndrewRadev/splitjoin.vim.git
+[submodule "sgmlendtag"]
+	path = sgmlendtag
+	url = https://github.com/ervandew/sgmlendtag.git
+[submodule "vim-enter-indent"]
+	path = vim-enter-indent
+	url = https://github.com/acustodioo/vim-enter-indent.git
+[submodule "HTML-AutoCloseTag"]
+	path = HTML-AutoCloseTag
+	url = https://github.com/vim-scripts/HTML-AutoCloseTag.git
+[submodule "toggle_words.vim"]
+	path = toggle_words.vim
+	url = https://github.com/vim-scripts/toggle_words.vim.git
+[submodule "monday"]
+	path = monday
+	url = https://github.com/vim-scripts/monday.git
+[submodule "swap-parameters"]
+	path = swap-parameters
+	url = https://github.com/vim-scripts/swap-parameters.git
