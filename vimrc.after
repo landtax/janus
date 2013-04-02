@@ -283,6 +283,23 @@ let g:_toggle_words_dict = {'*': [
 "     \ ],  }
 map <F3> <Esc>:ToggleWord<CR>
 
+" Escape/Unescape HTML
+function! HtmlEscape()
+  silent s/&/\&amp;/eg
+  silent s/</\&lt;/eg
+  silent s/>/\&gt;/eg
+endfunction
+
+function! HtmlUnEscape()
+  silent s/&lt;/</eg
+  silent s/&gt;/>/eg
+  silent s/&amp;/\&/eg
+endfunction
+
+function! HtmlIndent()
+  silent 1,$!xmllint --format --recover - 2>/dev/null 
+endfunction
+
 " Include user's local vim config
 if filereadable(expand("~/.vimrc.local"))
   source ~/.vimrc.local
