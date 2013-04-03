@@ -18,4 +18,9 @@ task :install_janus do
   sh "curl -Lo- https://bit.ly/janus-bootstrap | bash"
 end
 
+desc "Update plugins in .janus folder"
+task :update_plugins do
+  sh "git submodule foreach git pull origin master"
+end
+
 
