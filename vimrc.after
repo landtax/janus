@@ -182,7 +182,7 @@ imap <F1> <Esc>:NerdTreeToggle<CR>
 
 
 " Command-Shift-F for Ack
-map <C-F> :Ack<space>
+map <C-F> mM:Ack<space>
 
 
 " Command-Option-ArrowKey to switch viewports
