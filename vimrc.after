@@ -151,7 +151,7 @@ set modeline
 set modelines=10
 
 " Default color scheme
- color railscasts2
+color railscasts2
 
 " Directories for swp files
 " set backupdir=~/.vim/backup
@@ -278,9 +278,7 @@ let g:_toggle_words_dict = {'*': [
     \ ['1', '0'],
     \ [],
     \ ],  }
-" let g:toggle_words_dict = {'*': [
-"     \ ['if', 'unless'], 
-"     \ ],  }
+
 map <F3> <Esc>:ToggleWord<CR>
 
 " Escape/Unescape HTML
