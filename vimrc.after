@@ -259,6 +259,7 @@ let g:_toggle_words_dict = {'*': [
     \ ['+', '-'], 
     \ ['allow', 'deny'], 
     \ ['before', 'after'], 
+    \ ['show', 'hide'], 
     \ ['block', 'inline', 'none'],
     \ ['define', 'undef'], 
     \ ['good', 'bad'], 
